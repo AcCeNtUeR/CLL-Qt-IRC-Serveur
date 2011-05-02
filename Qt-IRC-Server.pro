@@ -4,15 +4,17 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui network
 
 TARGET = Qt-IRC-Server
 TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        serveur.cpp
+        serveur.cpp \
+    threadserveur.cpp
 
-HEADERS  += serveur.h
+HEADERS  += serveur.h \
+    threadserveur.h
 
 FORMS    += serveur.ui
