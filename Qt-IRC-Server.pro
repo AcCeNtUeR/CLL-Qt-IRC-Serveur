@@ -12,9 +12,11 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         serveur.cpp \
-    threadserveur.cpp
+    threadserveur.cpp \
+    threadconnect.cpp
 
 HEADERS  += serveur.h \
-    threadserveur.h
+    threadserveur.h \
+    threadconnect.h
 
 FORMS    += serveur.ui

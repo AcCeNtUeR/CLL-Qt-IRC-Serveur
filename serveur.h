@@ -4,8 +4,9 @@
 #include <QMainWindow>
 #include <QtGui>
 #include <QTcpServer>
+#include <QTcpSocket>
 #include <QThread>
-#include "threadserveur.h"
+#include "threadconnect.h"
 
 namespace Ui {
     class Serveur;
@@ -19,6 +20,12 @@ public:
     explicit Serveur(QWidget *parent = 0);
     ~Serveur();
 
+signals:
+   void siNouvelleConnection();
+   void siValidCon(QString);
+   void siValidCre(QString);
+
+
 private slots:
     void on_btnStart_clicked();
 
@@ -26,9 +33,16 @@ private slots:
 
     void Connection();
 
+    void NewCon(QString);
+
+    void NewChat(QString);
+
+
 private:
     Ui::Serveur *ui;
     QTcpServer *m_QTcpServer;
+    QString *tChatroom[5];
+    QTcpSocket *sockClient;
 };
 
 #endif // SERVEUR_H

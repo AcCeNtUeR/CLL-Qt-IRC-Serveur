@@ -30,7 +30,53 @@ void Serveur::on_btnCommencer_clicked()
 
 void Serveur::Connection()
 {
-    ThreadEnvoie *maThreadEnvoie = new ThreadEnvoie(m_QTcpServer->nextPendingConnection());
-    connect(this,SIGNAL(siImage(QByteArray)),maThreadEnvoie,SLOT(Image(QByteArray)));
-    maThreadEnvoie->start();
+   sockClient = m_QTcpServer->nextPendingConnection();
+   QString ChatRoom = "";
+   int i = 0;
+   while(i < 6)
+   {
+       if(!tChatroom[i]->isEmpty())
+       {
+        ChatRoom += tChatroom[i] +"\n";
+       }
+     i++;
+   }
+   sockClient->write(ChatRoom.toAscii());
+
+    ThreadConnect *maThreadConnect = new ThreadConnect(sockClient);
+    connect(maThreadConnect,SIGNAL(siNouvelleCre(QString)),this,SLOT(NewChat(QString)));
+    connect(maThreadConnect,SIGNAL(siNouvelleCon(QString)),this,SLOT(NewCon(QString)));
+    connect(this,SIGNAL(siValidCre(QString)),maThreadConnect,SLOT(FonctionValidCre(QString)));
+    connect(this,SIGNAL(siValidCon(QString)),maThreadConnect,SLOT(FonctionValidCon(QString)));
+    maThreadConnect->start();
+}
+void Serveur::NewChat(QString TrameCreation)
+{
+   QString Validation = "Accp";
+   int i = 0;
+   while(i<6)
+   {
+       if(tChatroom[i] == TrameCreation)
+       {
+           Validation = "Refu";
+       }
+       i++;
+   }
+   i=0;
+   if(Validation =="Accp")
+   {
+       while(i<6)
+       {
+           if(tChatroom[i]->isEmpty() || tChatroom[i]->isNull() )
+           {
+               tChatroom[i] = TrameCreation;
+               i=6;
+           }
+       }
+   }
+   emit(siValidCre(Validation));
+}
+void Serveur::NewCon(QString TrameConnection)
+{
+
 }
