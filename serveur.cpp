@@ -7,8 +7,7 @@ Serveur::Serveur(QWidget *parent) :
 {
     ui->setupUi(this);
     m_QTcpServer = new QTcpServer();
-    m_QTcpServer->listen(QHostAddress::Any,60123);
-    connect(m_QTcpServer,SIGNAL(newConnection()),this,SLOT(Connection()));
+    ui->btnCommencer->hide();
 }
 
 Serveur::~Serveur()
@@ -20,6 +19,8 @@ void Serveur::on_btnStart_clicked()
 {
     ui->btnStart->hide();
     ui->btnCommencer->show();
+    m_QTcpServer->listen(QHostAddress::Any,60123);
+    connect(m_QTcpServer,SIGNAL(newConnection()),this,SLOT(Connection()));
 }
 
 void Serveur::on_btnCommencer_clicked()
@@ -46,7 +47,7 @@ void Serveur::Connection()
     //Connect au signaux de connection entre thread et threadprincipal
     ThreadConnect *maThreadConnect = new ThreadConnect(sockClient);
     connect(maThreadConnect,SIGNAL(siNouvelleCre(QString)),this,SLOT(NewChat(QString)));
-    connect(maThreadConnect,SIGNAL(siNouvelleCon(QString,QTcpSocket)),this,SLOT(NewCon(QString,QTcpSocket)));
+    connect(maThreadConnect,SIGNAL(siNouvelleCon(QString,QTcpSocket)),this,SLOT(NewCon(QString,QTcpSocket*)));
     connect(this,SIGNAL(siValidCre(QString)),maThreadConnect,SLOT(FonctionValidCre(QString)));
     connect(this,SIGNAL(siValidCon(QString)),maThreadConnect,SLOT(FonctionValidCon(QString)));
     maThreadConnect->start();
@@ -77,7 +78,7 @@ void Serveur::NewChat(QString TrameCreation)
     }
     emit(siValidCre(Validation));
 }
-void Serveur::NewCon(QString TrameConnection,QTcpSocket socket)
+void Serveur::NewCon(QString TrameConnection,QTcpSocket *socket)
 {
     QString chatroom="";
     QString User="";
@@ -98,7 +99,7 @@ void Serveur::NewCon(QString TrameConnection,QTcpSocket socket)
 
     ////Trouve la position de la chatroom dans le tableau de ChatRoom ET socket////
     i=0;
-    int posChat;
+    int posChat=0;
     //
     while(i<6)
     {
@@ -113,7 +114,7 @@ void Serveur::NewCon(QString TrameConnection,QTcpSocket socket)
     i=0;
     while(i<6)
     {
-        if(!tSockChatroom[posChat][i].isValid())
+        if(!tSockChatroom[posChat][i]->isValid())
         {
             tSockChatroom[posChat][i] = socket;
             Validation ="Accp";

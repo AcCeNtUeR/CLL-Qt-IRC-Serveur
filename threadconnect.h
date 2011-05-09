@@ -14,7 +14,7 @@ public:
 private:   
     QByteArray baReception;
 signals:
-    void siNouvelleCon(QString);
+    void siNouvelleCon(QString,QTcpSocket*);
     void siNouvelleChat(QString);
 public slots:
     void FonctionValidCre(QString);

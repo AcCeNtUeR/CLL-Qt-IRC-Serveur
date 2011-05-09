@@ -6,11 +6,12 @@ ThreadConnect::ThreadConnect(QTcpSocket *m_Socket) :
 {
      sockClient = m_Socket;
 }
-void ThreadConnect::FonctionConnect()
-{
+//void ThreadConnect::FonctionConnect()
+//{
 
 
-}
+
+//}
 void ThreadConnect::run()
 {
     sockClient->waitForReadyRead();
@@ -21,10 +22,7 @@ void ThreadConnect::run()
     }
     else
     {
-        if(QString(baReception.left(4))=="Cre#")
-        {
-            emit (siNouvelleCon(QString(baReception.right(5))));
-        }
+        emit (siNouvelleCon(QString(baReception.right(5)),sockClient));
     }
 
 }
