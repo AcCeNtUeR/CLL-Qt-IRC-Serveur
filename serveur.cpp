@@ -32,7 +32,7 @@ void Serveur::on_btnCommencer_clicked()
 void Serveur::Connection()
 {
     sockClient = m_QTcpServer->nextPendingConnection();
-    QString ChatRoom = "";
+    QString ChatRoom = "allo";
     int i = 0;
     while(i < 6)
     {
@@ -43,6 +43,7 @@ void Serveur::Connection()
         i++;
     }
     sockClient->write(ChatRoom.toAscii());
+    sockClient->waitForBytesWritten();
 
     //Connect au signaux de connection entre thread et threadprincipal
     ThreadConnect *maThreadConnect = new ThreadConnect(sockClient);
