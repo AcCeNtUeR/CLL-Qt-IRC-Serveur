@@ -10,7 +10,6 @@ void ThreadConnect::FonctionConnect()
 {
 
 
-
 }
 void ThreadConnect::run()
 {
@@ -22,7 +21,10 @@ void ThreadConnect::run()
     }
     else
     {
-        emit (siNouvelleCon(QString(baReception.right(5))));
+        if(QString(baReception.left(4))=="Cre#")
+        {
+            emit (siNouvelleCon(QString(baReception.right(5))));
+        }
     }
 
 }
