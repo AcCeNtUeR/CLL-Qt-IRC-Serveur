@@ -9,9 +9,9 @@ class ThreadConnect : public QThread
     Q_OBJECT
 public:
     explicit ThreadConnect(QTcpSocket *m_Socket);
+     QTcpSocket *sockClient;
 
-private:
-    QTcpSocket *sockClient;
+private:   
     QByteArray baReception;
 signals:
     void siNouvelleCon(QString);

@@ -33,7 +33,7 @@ private slots:
 
     void Connection();
 
-    void NewCon(QString);
+    void NewCon(QString,QTcpSocket);
 
     void NewChat(QString);
 
@@ -41,8 +41,10 @@ private slots:
 private:
     Ui::Serveur *ui;
     QTcpServer *m_QTcpServer;
-    QString *tChatroom[5];
+    QString tChatroom[5];
+    QTcpSocket tSockChatroom[6][6];
     QTcpSocket *sockClient;
+
 };
 
 #endif // SERVEUR_H
