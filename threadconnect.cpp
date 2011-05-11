@@ -14,11 +14,11 @@ ThreadConnect::ThreadConnect(QTcpSocket *m_Socket) :
 //}
 void ThreadConnect::run()
 {
-    sockClient->waitForReadyRead();
+    sockClient->waitForReadyRead(-1);
     baReception.append(sockClient->read(sockClient->bytesAvailable()));
     if(QString(baReception.left(4))=="Cre#")
     {
-         emit (siNouvelleChat(QString(baReception.right(5))));
+         emit (siNouvelleCre(QString(baReception.right(5))));
     }
     else
     {
@@ -32,12 +32,17 @@ void ThreadConnect::FonctionValidCre(QString Validation)
     {
         sockClient->write(Validation.toAscii());
         sockClient->waitForBytesWritten();
-        sockClient->waitForReadyRead();
+        sockClient->waitForReadyRead(-1);
+        baReception.clear();
         baReception.append(sockClient->read(sockClient->bytesAvailable()));
         if(QString(baReception.left(4))=="Con#")
         {
             emit (siNouvelleCon(QString(baReception.right(5)),sockClient));
         }
+    }
+    else
+    {
+        ThreadConnect::run();
     }
 
 }
@@ -47,5 +52,9 @@ void ThreadConnect::FonctionValidCon(QString Validation)
     {
         sockClient->write(Validation.toAscii());
         sockClient->waitForBytesWritten();
+    }
+    else
+    {
+        ThreadConnect::run();
     }
 }

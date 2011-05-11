@@ -8,10 +8,15 @@ Serveur::Serveur(QWidget *parent) :
     ui->setupUi(this);
     m_QTcpServer = new QTcpServer();
     ui->btnCommencer->hide();
+    tChatroom[0] = "XD";
+    tChatroom[2] = "Allo";
+
 }
 
 Serveur::~Serveur()
 {
+    m_QTcpServer->close();
+
     delete ui;
 }
 
@@ -31,8 +36,9 @@ void Serveur::on_btnCommencer_clicked()
 
 void Serveur::Connection()
 {
-    sockClient = m_QTcpServer->nextPendingConnection();
-    QString ChatRoom = "allo";
+   // ThreadConnect *maThreadConnect = new ThreadConnect(m_QTcpServer->nextPendingConnection());
+    QTcpSocket *sockClient = m_QTcpServer->nextPendingConnection();
+    QString ChatRoom = "";
     int i = 0;
     while(i < 6)
     {
@@ -48,10 +54,11 @@ void Serveur::Connection()
     //Connect au signaux de connection entre thread et threadprincipal
     ThreadConnect *maThreadConnect = new ThreadConnect(sockClient);
     connect(maThreadConnect,SIGNAL(siNouvelleCre(QString)),this,SLOT(NewChat(QString)));
-    connect(maThreadConnect,SIGNAL(siNouvelleCon(QString,QTcpSocket)),this,SLOT(NewCon(QString,QTcpSocket*)));
+    bool connection = connect(maThreadConnect,SIGNAL(siNouvelleCon(QString,QTcpSocket*)),this,SLOT(NewCon(QString,QTcpSocket*)));
     connect(this,SIGNAL(siValidCre(QString)),maThreadConnect,SLOT(FonctionValidCre(QString)));
     connect(this,SIGNAL(siValidCon(QString)),maThreadConnect,SLOT(FonctionValidCon(QString)));
-    maThreadConnect->start();
+      maThreadConnect->start();
+
 }
 void Serveur::NewChat(QString TrameCreation)
 {
@@ -75,6 +82,7 @@ void Serveur::NewChat(QString TrameCreation)
                 tChatroom[i] = TrameCreation;
                 i=6;
             }
+            i++;
         }
     }
     emit(siValidCre(Validation));
