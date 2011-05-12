@@ -30,6 +30,7 @@ void ThreadConnect::FonctionValidCre(QString Validation)
 {
     if(Validation == "Accp")
     {
+
         sockClient->write(Validation.toAscii());
         sockClient->waitForBytesWritten();
         sockClient->waitForReadyRead(-1);
@@ -37,6 +38,10 @@ void ThreadConnect::FonctionValidCre(QString Validation)
         baReception.append(sockClient->read(sockClient->bytesAvailable()));
         if(QString(baReception.left(4))=="Con#")
         {
+
+            QString ba(baReception);
+            QString bal(baReception.right(5));
+            int all = 0;
             emit (siNouvelleCon(QString(baReception.right(5)),sockClient));
         }
     }
