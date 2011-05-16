@@ -21,6 +21,7 @@ Serveur::~Serveur()
 
 void Serveur::on_btnStart_clicked()
 {
+
     int i =0;
     int j =0;
     while(i<6)
