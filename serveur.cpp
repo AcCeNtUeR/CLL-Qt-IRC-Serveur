@@ -6,7 +6,6 @@ Serveur::Serveur(QWidget *parent) :
     ui(new Ui::Serveur)
 {
     ui->setupUi(this);
-    m_QTcpServer = new QTcpServer();
     ui->btnCommencer->hide();
     tChatroom[0] = "XD";
     tChatroom[2] = "Allo";
@@ -22,6 +21,18 @@ Serveur::~Serveur()
 
 void Serveur::on_btnStart_clicked()
 {
+    int i =0;
+    int j =0;
+    while(i<6)
+    {
+        while(j<6)
+        {
+            tboolChatroom[i][j] = false;
+            j++;
+        }
+        i++;
+    }
+    m_QTcpServer = new QTcpServer();
     ui->btnStart->hide();
     ui->btnCommencer->show();
     m_QTcpServer->listen(QHostAddress::Any,60123);
@@ -32,6 +43,8 @@ void Serveur::on_btnCommencer_clicked()
 {
     ui->btnStart->show();
     ui->btnCommencer->hide();
+    m_QTcpServer->close();
+
 }
 
 void Serveur::Connection()
@@ -123,7 +136,7 @@ void Serveur::NewCon(QString TrameConnection,QTcpSocket *socket)
     i=0;
     while(i<6)
     {
-        if(!tSockChatroom[posChat][i]->isValid())
+        if(tboolChatroom[posChat][i] ==false)
         {
             tSockChatroom[posChat][i] = socket;
             Validation ="Accp";

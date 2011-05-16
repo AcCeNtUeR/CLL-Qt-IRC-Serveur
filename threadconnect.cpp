@@ -18,11 +18,11 @@ void ThreadConnect::run()
     baReception.append(sockClient->read(sockClient->bytesAvailable()));
     if(QString(baReception.left(4))=="Cre#")
     {
-         emit (siNouvelleCre(QString(baReception.right(5))));
+         emit (siNouvelleCre(QString(baReception.right(baReception.length() - 4))));
     }
     else
     {
-        emit (siNouvelleCon(QString(baReception.right(5)),sockClient));
+        emit (siNouvelleCon(QString(baReception.right(baReception.length() - 4)),sockClient));
     }
 
 }
@@ -38,11 +38,7 @@ void ThreadConnect::FonctionValidCre(QString Validation)
         baReception.append(sockClient->read(sockClient->bytesAvailable()));
         if(QString(baReception.left(4))=="Con#")
         {
-
-            QString ba(baReception);
-            QString bal(baReception.right(5));
-            int all = 0;
-            emit (siNouvelleCon(QString(baReception.right(5)),sockClient));
+            emit(siNouvelleCon(QString(baReception.right(baReception.length() - 4)),sockClient));
         }
     }
     else

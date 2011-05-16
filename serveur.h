@@ -43,6 +43,7 @@ private:
     QTcpServer *m_QTcpServer;
     QString tChatroom[6];
     QTcpSocket *tSockChatroom[6][6];
+    bool tboolChatroom[6][6];
    // QTcpSocket *sockClient;
 
 };
