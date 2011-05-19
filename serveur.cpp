@@ -9,12 +9,14 @@ Serveur::Serveur(QWidget *parent) :
     ui->btnCommencer->hide();
     tChatroom[0] = "XD";
     tChatroom[2] = "Allo";
+    compteur=0;
 
 }
 
 Serveur::~Serveur()
 {
     m_QTcpServer->close();
+
 
     delete ui;
 }
@@ -31,6 +33,7 @@ void Serveur::on_btnStart_clicked()
             tboolChatroom[i][j] = false;
             j++;
         }
+        j=0;
         i++;
     }
     m_QTcpServer = new QTcpServer();
@@ -54,6 +57,11 @@ void Serveur::Connection()
     QTcpSocket *sockClient = m_QTcpServer->nextPendingConnection();
     QString ChatRoom = "";
     int i = 0;
+    compteur++;
+    if(compteur==2)
+    {
+        i=0;
+    }
     while(i < 6)
     {
         if(!tChatroom[i].isEmpty())
@@ -66,12 +74,13 @@ void Serveur::Connection()
     sockClient->waitForBytesWritten();
 
     //Connect au signaux de connection entre thread et threadprincipal
+
     ThreadConnect *maThreadConnect = new ThreadConnect(sockClient);
     connect(maThreadConnect,SIGNAL(siNouvelleCre(QString)),this,SLOT(NewChat(QString)));
     bool connection = connect(maThreadConnect,SIGNAL(siNouvelleCon(QString,QTcpSocket*)),this,SLOT(NewCon(QString,QTcpSocket*)));
     connect(this,SIGNAL(siValidCre(QString)),maThreadConnect,SLOT(FonctionValidCre(QString)));
     connect(this,SIGNAL(siValidCon(QString)),maThreadConnect,SLOT(FonctionValidCon(QString)));
-      maThreadConnect->start();
+    maThreadConnect->start();
 
 }
 void Serveur::NewChat(QString TrameCreation)
@@ -140,11 +149,67 @@ void Serveur::NewCon(QString TrameConnection,QTcpSocket *socket)
         if(tboolChatroom[posChat][i] ==false)
         {
             tSockChatroom[posChat][i] = socket;
+            tboolChatroom[posChat][i]=true;
             Validation ="Accp";
             i=6;
         }
         i++;
     }
+    ThreadServeur *mathreadLecture = new ThreadServeur(socket);
+    connect(mathreadLecture,SIGNAL(Fin(QTcpSocket*)),this,SLOT(SortieChat(QTcpSocket*)));
+    connect(mathreadLecture,SIGNAL(Envoie(QTcpSocket*,QString)),this,SLOT(Envoie(QTcpSocket*,QString)));
     ////Envoie de la validation////
+    mathreadLecture->start();
     emit(siValidCon(Validation));
 }
+void Serveur::SortieChat(QTcpSocket *socket)
+{
+    int posChat =0;
+    int i=0;
+    while(posChat<6)
+    {
+        i=0;
+        while(i<6)
+        {
+            if(tSockChatroom[posChat][i] == socket)
+            {
+                tSockChatroom[posChat][i]->close();
+                tboolChatroom[posChat][i] =false;
+                i=6;
+                posChat=6;
+            }
+            i++;
+        }
+        posChat++;
+    }
+
+}
+void Serveur::Envoie(QTcpSocket *socket,QString Trame)
+{
+    int posChat =0;
+    int i=0;
+    int j=0;
+    while(posChat<6)
+    {
+        i=0;
+        while(i<6)
+        {
+            if(tSockChatroom[posChat][i] == socket)
+            {
+                while(j<6)
+                {
+                 if( tboolChatroom[posChat][j]==true)
+                 {
+                 tSockChatroom[posChat][j]->write(Trame.toAscii());
+                 tSockChatroom[posChat][j]->waitForBytesWritten();
+                 }
+                 j++;
+                }
+                i=6;
+                posChat=6;
+            }
+            i++;
+        }
+        posChat++;
+    }
+ }

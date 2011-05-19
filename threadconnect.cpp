@@ -5,6 +5,7 @@ ThreadConnect::ThreadConnect(QTcpSocket *m_Socket) :
     QThread()
 {
      sockClient = m_Socket;
+   //  connect (sockClient, SIGNAL(disconnected()), this, SLOT(slDeconnexion()));
 }
 //void ThreadConnect::FonctionConnect()
 //{
@@ -59,3 +60,8 @@ void ThreadConnect::FonctionValidCon(QString Validation)
         ThreadConnect::run();
     }
 }
+
+/*void ThreadConnect::slDeconnexion()
+{
+
+}*/

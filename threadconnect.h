@@ -4,6 +4,7 @@
 #include <QThread>
 #include <serveur.h>
 
+
 class ThreadConnect : public QThread
 {
     Q_OBJECT
@@ -19,6 +20,7 @@ signals:
 public slots:
     void FonctionValidCre(QString);
     void FonctionValidCon(QString);
+   // void slDeconnexion();
 
 protected:
     void run();

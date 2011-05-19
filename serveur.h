@@ -7,6 +7,7 @@
 #include <QTcpSocket>
 #include <QThread>
 #include "threadconnect.h"
+#include "threadserveur.h"
 
 namespace Ui {
     class Serveur;
@@ -24,6 +25,7 @@ signals:
    void siNouvelleConnection();
    void siValidCon(QString);
    void siValidCre(QString);
+ //  void Lecture();
 
 
 private slots:
@@ -37,6 +39,10 @@ private slots:
 
     void NewChat(QString);
 
+    void SortieChat(QTcpSocket*);
+
+    void Envoie(QTcpSocket*,QString);
+
 
 private:
     Ui::Serveur *ui;
@@ -44,6 +50,7 @@ private:
     QString tChatroom[6];
     QTcpSocket *tSockChatroom[6][6];
     bool tboolChatroom[6][6];
+    int compteur;
    // QTcpSocket *sockClient;
 
 };
